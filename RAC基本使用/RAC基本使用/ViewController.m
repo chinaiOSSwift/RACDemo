@@ -21,6 +21,13 @@
 @property (nonatomic, assign) int time;
 @property (nonatomic, strong) RACDisposable *disposable;
 
+@property (weak, nonatomic) IBOutlet UILabel *lable;
+
+@property (weak, nonatomic) IBOutlet UITextField *inputTF;
+
+
+
+
 @end
 
 @implementation ViewController
@@ -50,7 +57,10 @@
     //[self Demo7];
     
     // RAC - Timer
-    [self Demo8];
+    //[self Demo8];
+    
+    // RAC的宏
+    [self Demo9];
     
 }
 /**第一个Demo*/
@@ -191,7 +201,28 @@
     
 }
 
+/**RAC 的宏*/
+- (void)Demo9{
+    // 第一种实现方式
+    /*
+    [self.inputTF.rac_textSignal subscribeNext:^(NSString * _Nullable x) {
+        self.lable.text = x;
+    }];
+     */
+    
+    // 第二种实现方式 ---> 非常灵活
+    RAC(_lable,text) = _inputTF.rac_textSignal;
+    
+    [RACObserve(self.view, frame) subscribeNext:^(id  _Nullable x) {
+        NSLog(@"%@",x);
+    }];
+    
+}
 
+
+- (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event{
+    self.view.frame = CGRectMake(0, 0, 100, 100);
+}
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
